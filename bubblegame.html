@@ -1,0 +1,159 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         body{
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            
+            background: url("assets/images/47784.jpg") no-repeat center center/cover;
+        }
+          div{
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-inline:50px ;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            bottom: 100%;
+            animation: bubble 3s cubic-bezier(0,0,0,0) 1 forwards;
+            border: 1px solid red;
+        }
+          #points{
+            position: fixed;
+            top:20px;
+            left:20px;
+            font-size: 30px;
+            font-weight: bold;
+            z-index: 1;
+            color: white;
+        }
+        #bm{
+            position: fixed;
+            top:60px;
+            left:20px;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            z-index: 1;
+        }
+          @keyframes bubble{
+            0%{
+                transform: translateY(100px);
+                bottom:0;   
+            }
+            100%{
+                bottom: 100%;
+            }
+        }
+           @keyframes miss{
+            0%{
+                opacity: 0;
+                font-size: 0px;
+                width: 50px;
+            }
+            100%{
+                opacity: 1;
+                font-size: 200px;
+                width: 1000px;
+            }
+            
+        } 
+        audio{
+            display: none;
+        }
+    </style>
+</head>
+<body id="bd">
+     <p id="points">Points: 0</p>
+    <p  id="bm">Missed: 0</p>
+    <audio id="music" src="" autoplay></audio>
+    <audio id="gameover" src="" autoplay></audio>
+    <audio id="bgMusic" src="assets/audio/Fluffing-a-Duck.mp3" loop></audio>
+
+
+
+    
+</body>
+<script>
+      let score = 0;
+    let miss = 0;
+    let timer;
+    timer = setInterval(()=>{
+
+     let text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+      let pos = Math.floor(Math.random()*80);  
+        
+        let random = Math.floor(Math.random() * text.length);
+        
+        let arr = [Math.floor(Math.random()*256),Math.floor(Math.random()*256),Math.floor(Math.random()*256)];
+        let div = document.createElement("div");
+        div.innerHTML = text[random];        
+        div.style.left = `${pos}%`;
+        div.style.backgroundColor = `rgb(${arr[0]},${arr[1]}, ${arr[2]},${0.6})`;
+        div.style.border = `2px solid rgb(${arr[0]},${arr[1]}, ${arr[2]})`;
+        document.body.appendChild(div); 
+        let bd = document.getElementById("bd");
+
+        bd.addEventListener("click", () => {
+    const music = document.getElementById("bgMusic");
+    if (music.paused) music.play();
+});
+        
+        document.addEventListener("keydown",(event)=>{
+            let key  = event.keyCode;
+            let e = text[random].charCodeAt(0);    
+            if(key == e){
+                // document.body.removeChild(div);
+                div.remove();
+                // let count = parseInt(points.innerText)
+                score++;
+                points.innerText = "points: "+ score;
+                music.src = "assets/audio/bubble.mp3"
+
+            }
+        })
+
+                div.addEventListener("animationend",()=>{
+            div.remove();
+            miss++;
+            // bm.innerText = "Missed: "+miss; 
+            if(miss == 15 ){
+                // miss--;
+                clearInterval(timer);
+                let gameOver = document.createElement("h1");
+                gameOver.className = "gameOver";
+                gameOver.innerHTML = "Game Over";
+                gameOver.style.fontSize="220px"
+                bm.innerText = "Missed: "+miss;
+                document.body.appendChild(gameOver);
+                setInterval(()=>{
+                    let arr1 = [Math.floor(Math.random()*256),Math.floor(Math.random()*256),Math.floor(Math.random()*256)];
+                    gameOver.style.color = `rgb(${arr1[0]},${arr1[1]}, ${arr1[2]})`
+            },100)  
+                
+               gameover.src = "assets/audio/gameover.mp3"
+            }
+            else if(miss < 15){
+            bm.innerText = "Missed: "+miss; 
+            }
+        })
+},1000)
+
+ bd.addEventListener("click", () => {
+    const music = document.getElementById("bgMusic");
+    if (music.paused) music.play();
+  });
+</script>
+</html>
